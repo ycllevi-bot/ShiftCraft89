@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>פורטל מרכז רישום | סמינר הקיבוצים</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#0F6E56;--green-d:#085041;--green-l:#1D9E75;--green-p:#E1F5EE;
+  --green-mid:#c8ede2;
+  --navy:#0F6E56;--gold:#D4860A;--gold-p:#FEF3DC;
+  --red:#C0392B;--red-p:#FDECEA;
+  --blue:#0C447C;--blue-p:#E6F1FB;
+  --purple:#6c3483;--purple-p:#F3ECFC;
+  --bg:#F0F5F3;--card:#fff;--border:#D5E8E1;
+  --text:#1A2E26;--text2:#4A6B5E;--text3:#8AABA0;
+  --r:12px;--rsm:7px;--sh:0 2px 14px rgba(15,110,86,.08);--shl:0 8px 36px rgba(15,110,86,.15);
+  --sb:232px;
+  --accent:#E8F5F1;--accent2:#C5E8DE;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);direction:rtl}
+
+/* ── LOGIN ── */
+#login-screen{position:fixed;inset:0;background:linear-gradient(145deg,#053D2D 0%,#085041 40%,#0F6E56 100%);display:flex;align-items:center;justify-content:center;z-index:9999}
+.login-box{background:#fff;border-radius:20px;padding:2.5rem 2rem;width:min(380px,92vw);box-shadow:var(--shl);border-top:4px solid var(--green)}
+.login-logo{text-align:center;margin-bottom:1.5rem}
+.login-logo-circle{width:64px;height:64px;border-radius:50%;background:var(--green);display:inline-flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;margin-bottom:.75rem}
+.login-title{font-size:20px;font-weight:800;color:var(--text);text-align:center;margin-bottom:.25rem}
+.login-sub{font-size:13px;color:var(--text3);text-align:center;margin-bottom:1.5rem}
+.login-roles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem}
+.role-btn{padding:1rem .75rem;border:2px solid var(--border);border-radius:var(--r);cursor:pointer;text-align:center;transition:all .15s;background:#fff}
+.role-btn:hover{border-color:var(--green);background:var(--green-p)}
+.role-btn.sel{border-color:var(--green);background:var(--green-p)}
+.role-btn .role-icon{font-size:24px;margin-bottom:.4rem}
+.role-btn .role-name{font-size:13px;font-weight:700;color:var(--text)}
+.login-field{margin-bottom:1rem}
+.login-field label{display:block;font-size:13px;font-weight:600;margin-bottom:.35rem}
+.login-field input{width:100%;border:1.5px solid var(--border);border-radius:var(--rsm);padding:10px 14px;font-family:'Heebo',sans-serif;font-size:14px;outline:none}
+.login-field input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(15,110,86,.12)}
+.login-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--green-d),var(--green));color:#fff;border:none;border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(15,110,86,.35)}
+.login-btn:hover{background:var(--green-d)}
+.login-hint{font-size:11px;color:var(--text3);text-align:center;margin-top:.75rem}
+
+/* ── LAYOUT ── */
+#app{display:none;height:100vh;overflow:hidden}
+#app.show{display:flex}
+#sidebar{width:var(--sb);background:linear-gradient(180deg,#085041 0%,#0a5a47 60%,#0d6650 100%);display:flex;flex-direction:column;height:100vh;flex-shrink:0;transition:transform .3s;z-index:200}
+#content-area{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{background:#FAFCFB;border-bottom:1.5px solid var(--border);padding:.75rem 1.25rem;display:flex;align-items:center;gap:.75rem;flex-shrink:0;position:relative;z-index:100}
+.menu-toggle{display:none;background:none;border:1px solid var(--border);border-radius:var(--rsm);padding:7px 10px;cursor:pointer;font-size:16px}
+.page-wrap{flex:1;overflow-y:auto;padding:1.25rem;background:var(--bg)}
+
+/* ── SIDEBAR ── */
+.sb-logo{padding:.9rem 1rem;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:8px;cursor:pointer}
+#sb-logo-img{height:30px;max-width:100px;object-fit:contain;display:none}
+#sb-logo-ph{width:30px;height:30px;border-radius:6px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;flex-shrink:0}
+.sb-logo-text{font-size:11px;font-weight:600;color:rgba(255,255,255,.75);line-height:1.3}
+.sb-profile{padding:.9rem 1rem;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:10px;cursor:pointer}
+.sb-avatar{width:40px;height:40px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;flex-shrink:0;overflow:hidden;border:2px solid var(--green-l)}
+.sb-avatar img{width:100%;height:100%;object-fit:cover}
+.sb-name{font-size:13px;font-weight:600;color:#fff}
+.sb-role-badge{font-size:10px;padding:2px 8px;border-radius:99px;margin-top:2px;display:inline-block}
+.sb-role-badge.advisor{background:rgba(255,255,255,.15);color:#b2f5e4}
+.sb-role-badge.manager{background:rgba(255,255,255,.15);color:#ffd580}
+nav{flex:1;overflow-y:auto;padding:.5rem 0}
+.nav-sec{font-size:10px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.3);padding:.5rem 1rem .2rem;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:10px;padding:.6rem 1rem;cursor:pointer;border-right:3px solid transparent;transition:background .15s}
+.nav-item:hover{background:rgba(255,255,255,.1)}
+.nav-item.active{background:rgba(255,255,255,.15);border-right-color:#7fffd4}
+.nav-icon{font-size:16px;width:22px;text-align:center;flex-shrink:0}
+.nav-label{font-size:13px;color:rgba(255,255,255,.8);font-weight:500}
+.nav-item.active .nav-label{color:#fff;font-weight:700}
+.nav-badge{margin-right:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px}
+.sb-footer{padding:.75rem 1rem;border-top:1px solid rgba(255,255,255,.12);display:flex;justify-content:space-between;align-items:center}
+.sb-footer-text{font-size:10px;color:rgba(255,255,255,.3)}
+.logout-btn{font-size:11px;color:rgba(255,255,255,.4);cursor:pointer;background:none;border:none;font-family:'Heebo',sans-serif}
+.logout-btn:hover{color:rgba(255,255,255,.7)}
+
+/* ── TOPBAR ── */
+.topbar-titles{flex:1}
+.tb-title{font-size:16px;font-weight:700}
+.tb-sub{font-size:11px;color:var(--text3)}
+.tb-actions{display:flex;gap:6px;align-items:center}
+.tb-btn{padding:7px 14px;border-radius:var(--rsm);border:1px solid var(--border);background:#fff;font-family:'Heebo',sans-serif;font-size:12px;font-weight:600;cursor:pointer;color:var(--text2);display:flex;align-items:center;gap:5px;white-space:nowrap}
+.tb-btn:hover{background:var(--bg)}
+.tb-btn.primary{background:var(--green);color:#fff;border-color:var(--green)}
+.tb-btn.primary:hover{background:var(--green-d)}
+.notif-btn{position:relative;padding:7px 10px;border:1px solid var(--border);border-radius:var(--rsm);background:#fff;cursor:pointer;font-size:15px}
+.notif-dot{position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--red);border:1.5px solid #fff}
+
+/* ── PAGES ── */
+.page{display:none}.page.active{display:block}
+
+/* ── CARDS & GRID ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem;box-shadow:var(--sh);transition:box-shadow .2s}
+.sec-title{font-size:14px;font-weight:700;margin-bottom:.75rem}
+.sec-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+.sec-action{font-size:12px;color:var(--green);cursor:pointer;font-weight:600}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem}
+
+/* ── STAT CARDS ── */
+.stat{background:linear-gradient(135deg,#fff 0%,#F5FAF8 100%);border:1px solid var(--border);border-radius:var(--r);padding:.9rem 1rem;position:relative;overflow:hidden}
+.stat::before{content:'';position:absolute;right:0;top:0;bottom:0;width:4px}
+.stat.g::before{background:var(--green)}.stat.go::before{background:var(--gold)}.stat.b::before{background:var(--blue)}.stat.r::before{background:var(--red)}
+.stat-n{font-size:24px;font-weight:800;line-height:1}.stat-l{font-size:11px;color:var(--text2);margin-top:.2rem}
+.stat-ico{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);font-size:22px;opacity:.12}
+
+/* ── LEARNING ── */
+.fac-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.fac-tab{padding:6px 14px;border-radius:99px;border:1px solid var(--border);background:#fff;font-family:'Heebo',sans-serif;font-size:12px;font-weight:600;cursor:pointer;color:var(--text2);transition:all .15s}
+.fac-tab.active{background:var(--green);color:#fff;border-color:var(--green);box-shadow:0 2px 8px rgba(15,110,86,.25)}
+.tracks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.track-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:.9rem;cursor:pointer;transition:box-shadow .2s,transform .15s;position:relative;overflow:hidden}
+.track-card::after{content:'';position:absolute;top:0;right:0;width:4px;height:100%}
+.track-card.edu::after{background:var(--green-l)}.track-card.sci::after{background:#378ADD}
+.track-card.hum::after{background:#D4537E}.track-card.arts::after{background:#EF9F27}.track-card.special::after{background:var(--purple)}
+.track-card:hover{box-shadow:0 4px 20px rgba(15,110,86,.12);transform:translateY(-3px)}
+.track-card.sel{border-color:var(--green);box-shadow:0 0 0 2px rgba(15,110,86,.2)}
+.tr-name{font-size:13px;font-weight:700;line-height:1.35;margin-bottom:.3rem}
+.tr-deg{font-size:11px;color:var(--text3)}
+.detail-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:1.25rem;animation:slideD .2s;box-shadow:var(--shl);border-top:3px solid var(--green)}
+@keyframes slideD{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.det-hdr{padding:1.1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start}
+.det-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;display:inline-block;margin-bottom:.4rem}
+.det-title{font-size:17px;font-weight:800;margin-bottom:.2rem}
+.det-deg{font-size:12px;color:var(--text2)}
+.det-body{padding:1.1rem;display:grid;grid-template-columns:1.2fr 1fr;gap:1.1rem}
+.d-lbl{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:.35rem}
+.d-txt{font-size:13px;line-height:1.7}
+.meta-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:.6rem}
+.mc{background:var(--bg);border:1px solid var(--border);border-radius:var(--rsm);padding:4px 10px;font-size:11px;font-weight:500}
+.pills{display:flex;flex-wrap:wrap;gap:5px}
+.pill{font-size:11px;padding:3px 9px;border-radius:99px;border:1px solid var(--border);color:var(--text2)}
+.close-x{background:none;border:1px solid var(--border);border-radius:var(--rsm);padding:5px 10px;cursor:pointer;font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap}
+.close-x:hover{background:var(--bg)}
+
+/* ── FORMS ── */
+.fg{display:flex;flex-direction:column;gap:.3rem;margin-bottom:.85rem}
+.fg label{font-size:12px;font-weight:600}
+input,textarea,select{width:100%;border:1.5px solid var(--border);border-radius:var(--rsm);padding:8px 11px;font-family:'Heebo',sans-serif;font-size:13px;color:var(--text);background:#fff;outline:none;transition:border-color .15s}
+input:focus,textarea:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(15,110,86,.1)}
+textarea{min-height:85px;resize:vertical}
+.sub-btn{padding:9px 22px;background:var(--green);color:#fff;border:none;border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(15,110,86,.3)}
+.sub-btn:hover{background:var(--green-d)}
+.ok-msg{background:#E1F5EE;color:#085041;border:1px solid #C5E8DE;border-radius:var(--rsm);padding:9px 14px;font-size:12px;font-weight:600;display:none;align-items:center;gap:6px;margin-top:.75rem}
+.ok-msg.show{display:flex}
+
+/* ── SHIFTS ── */
+.day-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:.75rem}
+.day-cell{border:1.5px solid var(--border);border-radius:var(--rsm);padding:.6rem;text-align:center;cursor:pointer;transition:all .15s;background:#fff}
+.day-cell.av{background:var(--green-p);border-color:var(--green)}.day-cell.un{background:var(--red-p);border-color:var(--red)}.day-cell.pa{background:var(--gold-p);border-color:var(--gold)}
+.dc-name{font-size:11px;font-weight:700;color:var(--text3);margin-bottom:.2rem}.dc-st{font-size:10px;font-weight:600}
+.day-cell.av .dc-st{color:var(--green)}.day-cell.un .dc-st{color:var(--red)}.day-cell.pa .dc-st{color:var(--gold)}
+
+/* ── MESSAGES ── */
+.chat-wrap{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;padding:.5rem 0;margin-bottom:.75rem}
+.bubble{max-width:78%;padding:.65rem .9rem;border-radius:12px;font-size:13px;line-height:1.55}
+.bubble.sent{align-self:flex-start;background:linear-gradient(135deg,var(--green),var(--green-l));color:#fff;border-radius:12px 12px 4px 12px}
+.bubble.recv{align-self:flex-end;background:var(--card);border:1px solid var(--border);border-radius:12px 12px 12px 4px}
+.bubble.manager-sent{align-self:flex-start;background:var(--gold-p);border:1px solid var(--gold);border-radius:12px 12px 4px 12px}
+.btime{font-size:10px;opacity:.6;margin-top:.2rem;display:block}
+.chat-input{display:flex;gap:6px}
+.chat-input input{flex:1}
+.chat-send{padding:8px 16px;background:var(--green);color:#fff;border:none;border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+
+/* ── NOTIFS ── */
+.notif-list{display:flex;flex-direction:column;gap:8px}
+.notif-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:.85rem 1rem;display:flex;gap:10px;cursor:pointer;transition:border-color .15s}
+.notif-item.unread{border-right:3px solid var(--green-l)}
+.notif-item:hover{border-color:var(--green-p)}
+.ni-icon{width:34px;height:34px;border-radius:var(--rsm);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ni-icon.update{background:var(--blue-p)}.ni-icon.urgent{background:var(--red-p)}.ni-icon.info{background:var(--green-p)}.ni-icon.admin{background:var(--gold-p)}
+.ni-title{font-size:13px;font-weight:700;margin-bottom:.2rem}
+.ni-text{font-size:12px;color:var(--text2);line-height:1.5}
+.ni-meta{font-size:10px;color:var(--text3);margin-top:.25rem}
+.ud{width:7px;height:7px;border-radius:50%;background:var(--green);margin-top:4px;flex-shrink:0}
+
+/* ── MANAGER INBOX ── */
+.inbox-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:.9rem 1rem;margin-bottom:8px;cursor:pointer}
+.inbox-item.unread{border-right:3px solid var(--gold)}
+.inbox-item:hover{border-color:var(--green-p)}
+.inbox-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.4rem}
+.inbox-from{font-size:13px;font-weight:700}
+.inbox-time{font-size:11px;color:var(--text3)}
+.inbox-type{font-size:11px;padding:2px 8px;border-radius:99px;background:var(--gold-p);color:var(--gold);font-weight:600}
+.inbox-preview{font-size:13px;color:var(--text2);line-height:1.5}
+.inbox-status{display:flex;gap:6px;margin-top:.4rem;align-items:center}
+.status-chip{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600}
+.status-chip.open{background:var(--red-p);color:var(--red)}.status-chip.replied{background:var(--green-p);color:var(--green-d)}
+
+/* ── PROFILE ── */
+.profile-grid{display:grid;grid-template-columns:200px 1fr;gap:1.25rem}
+.profile-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;text-align:center}
+.big-av{width:88px;height:88px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:30px;color:#fff;font-weight:800;margin:0 auto .75rem;overflow:hidden;border:3px solid var(--green-p);cursor:pointer}
+.big-av img{width:100%;height:100%;object-fit:cover}
+.big-name{font-size:16px;font-weight:800;margin-bottom:.15rem}
+.big-role{font-size:12px;color:var(--text2);margin-bottom:.9rem}
+.upload-zone{border:2px dashed var(--border);border-radius:var(--rsm);padding:.9rem;text-align:center;cursor:pointer;transition:all .15s}
+.upload-zone:hover{border-color:var(--green);background:var(--green-p)}
+.upload-zone p{font-size:12px;color:var(--text3)}
+
+/* ── POPUP ── */
+#pop-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9998;align-items:center;justify-content:center;padding:1rem}
+#pop-overlay.show{display:flex}
+#pop-box{background:#fff;border-radius:var(--r);max-width:460px;width:100%;box-shadow:var(--shl);overflow:hidden;animation:popIn .2s}
+@keyframes popIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.pop-hdr{padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;color:#fff}
+.pop-hdr h3{font-size:15px;font-weight:700}
+.pop-tag{font-size:11px;background:rgba(255,255,255,.25);padding:2px 9px;border-radius:99px}
+.pop-body{padding:1.25rem}
+.pop-body p{font-size:14px;line-height:1.75}
+.pop-date{font-size:11px;color:var(--text3);margin-top:.6rem}
+.pop-footer{padding:.75rem 1.25rem 1.1rem;display:flex;gap:8px;justify-content:flex-end}
+.pop-btn{padding:7px 18px;border-radius:var(--rsm);border:none;cursor:pointer;font-family:'Heebo',sans-serif;font-size:13px;font-weight:600}
+.pop-btn.p{background:var(--green);color:#fff}.pop-btn.s{background:var(--bg);color:var(--text2);border:1px solid var(--border)}
+
+/* ── REPLY MODAL ── */
+#reply-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9997;align-items:center;justify-content:center;padding:1rem}
+#reply-overlay.show{display:flex}
+#reply-box{background:#fff;border-radius:var(--r);max-width:500px;width:100%;box-shadow:var(--shl);overflow:hidden}
+.reply-hdr{background:var(--navy);color:#fff;padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center}
+.reply-hdr h3{font-size:14px;font-weight:700}
+.reply-body{padding:1.25rem}
+.orig-msg{background:var(--bg);border-radius:var(--rsm);padding:.75rem;font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:.9rem;border-right:3px solid var(--green)}
+
+/* ── CHIP / UTILS ── */
+.chip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600}
+.chip.g{background:var(--green-p);color:var(--green-d)}.chip.r{background:var(--red-p);color:var(--red)}.chip.go{background:var(--gold-p);color:var(--gold)}.chip.b{background:var(--blue-p);color:var(--blue)}
+.divider{border:none;border-top:1px solid var(--border);margin:.75rem 0}
+.mt{margin-top:.75rem}.mt2{margin-top:1.1rem}
+.hidden{display:none!important}
+.flex{display:flex;gap:.6rem;align-items:center}
+.flex-b{display:flex;justify-content:space-between;align-items:center}
+
+/* ── MOBILE ── */
+#mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150}
+@media(max-width:720px){
+  :root{--sb:260px}
+  #sidebar{position:fixed;right:0;top:0;transform:translateX(100%);z-index:200}
+  #sidebar.open{transform:translateX(0)}
+  #mob-overlay.show{display:block}
+  .menu-toggle{display:flex}
+  .page-wrap{padding:.9rem}
+  .g2,.g3,.g4{grid-template-columns:1fr 1fr}
+  .det-body{grid-template-columns:1fr}
+  .profile-grid{grid-template-columns:1fr}
+  .tracks-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+  .tb-actions .tb-btn:not(.primary){display:none}
+}
+@media(max-width:420px){
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .login-roles{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-circle" id="login-logo-ph" style="display:none">ס"ק</div>
+      <img id="login-logo-img" src="data:image/png;base64,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" style="max-height:80px;object-fit:contain;display:block;margin:0 auto .75rem">
+      <div class="login-title">פורטל מרכז רישום</div>
+      <div class="login-sub">סמינר הקיבוצים | המכללה האקדמית</div>
+    </div>
+    <div style="background:var(--green-p);border:1px solid var(--green-mid);border-radius:10px;padding:.75rem 1rem;margin-bottom:1.1rem;font-size:12px;color:var(--green-d);text-align:center;line-height:1.7">
+      🔐 התפקיד שלך נקבע אוטומטית<br>לפי ההגדרות שקבע מנהל המערכת
+    </div>
+    <div class="login-field">
+      <label>שם מלא</label>
+      <input type="text" id="login-name" placeholder="הכנס/י שמך המלא">
+    </div>
+    <div class="login-field">
+      <label>כתובת מייל</label>
+      <input type="email" id="login-email" placeholder="name@smkb.ac.il" onkeypress="if(event.key==='Enter')doFirebaseLogin()">
+    </div>
+    <div class="login-field">
+      <label>סיסמה (לפחות 6 תווים)</label>
+      <input type="password" id="login-pass" placeholder="••••••••" onkeypress="if(event.key==='Enter')doFirebaseLogin()">
+    </div>
+    <button class="login-btn" id="login-submit-btn" onclick="doFirebaseLogin()">כניסה לפורטל ›</button>
+    <div class="login-hint" style="margin-bottom:.3rem">המשתמש הראשון שנרשם יקבל הרשאות מנהל אוטומטית</div>
+    <div style="text-align:center;margin-top:.75rem;font-size:10px;color:var(--text3)">פותח ע"י <strong style="color:var(--green)">יחיאל לוי</strong></div>
+    <div style="text-align:center"><span style="font-size:11px;color:var(--green);cursor:pointer" onclick="resetPass()">שכחתי סיסמה</span></div>
+  </div>
+</div>
+
+<!-- ── POPUP NOTIFICATION ── -->
+<div id="pop-overlay" onclick="if(event.target===this)closePop()">
+  <div id="pop-box">
+    <div class="pop-hdr" id="pop-hdr">
+      <h3 id="pop-title">עדכון</h3><span class="pop-tag" id="pop-tag">מידע</span>
+    </div>
+    <div class="pop-body"><p id="pop-msg"></p><div class="pop-date" id="pop-date"></div></div>
+    <div class="pop-footer">
+      <button class="pop-btn s" onclick="closePop()">סגור</button>
+      <button class="pop-btn p" onclick="markPopRead()">קיבלתי ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── REPLY MODAL ── -->
+<div id="reply-overlay" onclick="if(event.target===this)closeReply()">
+  <div id="reply-box">
+    <div class="reply-hdr">
+      <h3 id="reply-hdr-title">תשובה לפנייה</h3>
+      <button onclick="closeReply()" style="background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:18px">✕</button>
+    </div>
+    <div class="reply-body">
+      <div class="d-lbl">הפנייה המקורית</div>
+      <div class="orig-msg" id="orig-msg-text"></div>
+      <div class="fg"><label>תשובתך</label><textarea id="reply-text" placeholder="כתוב/י את תשובתך כאן..."></textarea></div>
+      <div class="flex">
+        <button class="sub-btn" onclick="sendReply()">שלח תשובה ›</button>
+      </div>
+      <div class="ok-msg" id="reply-ok">✅ התשובה נשלחה ליועץ/ת!</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── APP ── -->
+<div id="app">
+  <div id="mob-overlay" onclick="closeSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div class="sb-logo" onclick="document.getElementById('logo-file').click()">
+      <div id="sb-logo-ph" style="display:none">ס"ק</div>
+      <img id="sb-logo-img" src="data:image/png;base64,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" alt="לוגו" style="display:block">
+      <div class="sb-logo-text">סמינר הקיבוצים<br><span style="font-weight:400;font-size:10px">מרכז ייעוץ ורישום</span></div>
+      <input type="file" id="logo-file" accept="image/*" style="display:none" onchange="uploadLogo(event)">
+    </div>
+    <div class="sb-profile" onclick="navigate('profile')">
+      <div class="sb-avatar" id="sb-av"><span id="sb-init">?</span></div>
+      <div>
+        <div class="sb-name" id="sb-name">טוען...</div>
+        <span class="sb-role-badge" id="sb-role-badge">יועץ</span>
+      </div>
+    </div>
+    <nav id="nav-links"></nav>
+    <div class="sb-footer">
+      <span class="sb-footer-text" style="font-size:10px;opacity:.5;color:#fff">פותח ע"י יחיאל לוי</span>
+      <button class="logout-btn" onclick="doLogout()">יציאה ↩</button>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div id="content-area">
+    <div class="topbar">
+      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-titles">
+        <div class="tb-title" id="tb-title">לוח בקרה</div>
+        <div class="tb-sub" id="tb-sub">שלום!</div>
+      </div>
+      <div class="tb-actions">
+        <button class="notif-btn" onclick="navigate('notifications')" title="התראות">🔔<div class="notif-dot" id="top-dot" style="display:none"></div></button>
+        <button class="tb-btn" onclick="navigate('shifts')">📅 משמרת</button>
+        <button class="tb-btn primary" onclick="navigate('messages')">✉️ פנייה</button>
+      </div>
+    </div>
+    <div class="page-wrap">
+      <div id="page-dashboard" class="page active"></div>
+      <div id="page-learning" class="page"></div>
+      <div id="page-procedures" class="page"></div>
+      <div id="page-shifts" class="page"></div>
+      <div id="page-messages" class="page"></div>
+      <div id="page-notifications" class="page"></div>
+      <div id="page-inbox" class="page"></div>
+      <div id="page-profile" class="page"></div>
+      <div id="page-users" class="page"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════ STATE ═══════════════
+let currentRole = 'advisor';
+let currentUser = '';
+let logoData = "data:image/png;base64,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";
+let picData = null;
+let profile = {fname:'',lname:'',email:'',phone:'',dept:''};
+let selFac = 'all';
+let selTrack = null;
+let shiftState = {};
+const days = ['ראשון','שני','שלישי','רביעי','חמישי','שישי'];
+days.forEach(d => shiftState[d] = 'none');
+let requests = [];
+let popIdx = 0;
+let replyIdx = -1;
+let messages = [{role:'manager',text:'שלום! אני כאן אם יש שאלות.',time:'09:00'}];
+
+const notifications = [
+  {id:0,type:'update',icon:'📢',title:'עדכון תנאי קבלה תשפ"ז',text:'ממוצע בגרות עודכן ל-85 ומעלה, ציון משולב 510. פסיכומטרי 600+ עם בגרות. שכר תשפ"ז יפורסם סוף אוגוסט.',date:'היום, 09:30',read:false},
+  {id:1,type:'urgent',icon:'⚠️',title:'שינוי נוהל הפסקת לימודים',text:'הודעה על הפסקת לימודים חייבת להישלח בכתב בלבד למייל MinhalLom.Skb@smkb.ac.il. הודעה טלפונית אינה מספיקה.',date:'אתמול, 14:20',read:false},
+  {id:2,type:'info',icon:'ℹ️',title:'שכר לימוד תשפ"ו – ₪12,017',text:'שכר לימוד מלא לתשפ"ו: ₪12,017 (מדד יולי 2025). מקדמה לשמירת מקום: ₪1,500.',date:'לפני יומיים',read:false},
+];
+
+const facColors = {
+  edu:{bg:'#E1F5EE',color:'#085041',label:'פקולטת החינוך'},
+  sci:{bg:'#E6F1FB',color:'#0C447C',label:'פקולטת המדעים'},
+  hum:{bg:'#FBEAF0',color:'#72243E',label:'מדעי הרוח והחברה'},
+  arts:{bg:'#FAEEDA',color:'#633806',label:'פקולטת האמנויות'},
+  special:{bg:'#F3ECFC',color:'#6c3483',label:'הכשרות ייחודיות'},
+};
+
+const tracks = [
+  {key:'e1',fac:'edu',name:'חינוך לבית הספר היסודי',degree:'B.Ed + תעודת הוראה',dur:"3 שנים (כולל סטאז')",campus:'נמיר 149, ת"א',lang:'עברית',desc:"תואר ראשון B.Ed בחינוך לבית הספר היסודי (א'–ו'). השנה השלישית כוללת סטאז' מלווה בשכר. התוכנית משתתפת ב'אקדמיה-כיתה' – שילוב לימוד עיוני עם התנסות מעשית בבתי ספר כבר משנה א'.",pills:["אקדמיה-כיתה","ניהול כיתה","הוראה מותאמת","אוריינות","חשבון"],jobs:'מורה יסודי/ת, מחנך/ת כיתה, יועץ/ת חינוכי',admission:'בגרות 85+ או ציון משולב 510 | פסיכומטרי 600+',tuition:'₪12,017'},
+  {key:'e2',fac:'edu',name:'חינוך לגיל הרך',degree:'B.Ed + תעודת הוראה',dur:'3 שנים',campus:'נמיר 149, ת"א',lang:'עברית',desc:'הכשרה מקיפה לחינוך ילדים מהלידה עד גיל 6. שילוב פסיכולוגיית התפתחות, פדגוגיה לגיל הרך ופרקטיקום בגני ילדים.',pills:['פסיכולוגיית התפתחות','גיל רך','פרקטיקום','משחק','הכלה'],jobs:'גננת, סייעת פדגוגית, רכזת גן, יועצת לגיל הרך',admission:'בגרות 85+ או ציון משולב 510',tuition:'₪12,017'},
+  {key:'e3',fac:'edu',name:'חינוך מיוחד רב-גילאי',degree:'B.Ed + תעודת הוראה',dur:'4 שנים',campus:'נמיר 149, ת"א',lang:'עברית',desc:'הכשרה לעבודה עם ילדים ובני נוער עם צרכים מיוחדים (גילאים 0–21). כוללת התמחות בהוראה מותאמת בקריאה ומתמטיקה.',pills:['אבחון','הוראה מותאמת','כיתות שילוב','מרכז שילוב'],jobs:'מורה לחינוך מיוחד, מרכז שילוב, מנהל מוסד מיוחד',admission:'בגרות 85+',tuition:'₪12,017'},
+  {key:'s1',fac:'sci',name:'חינוך גופני',degree:'B.Ed + תעודת הוראה',dur:'4 שנים',campus:'מרכז הספורט הלאומי, הדר יוסף',lang:'עברית',desc:'תוכנית ייחודית במתקני ספורט ברמה אולימפית. שילוב התנסות מעשית בספורט עם לימודי חינוך ופדגוגיה.',pills:['ספורט','תזונה','דידקטיקה','בריאות'],jobs:'מורה לחינוך גופני, מאמן ספורט, מנהל פעילות גופנית',admission:'בגרות 85+',tuition:'₪12,017'},
+  {key:'s2',fac:'sci',name:'מדעי המחשב',degree:'B.Ed + תעודת הוראה',dur:'4 שנים',campus:'נמיר 149, ת"א',lang:'עברית',desc:'הכשרה להוראת מדעי המחשב בחינוך העל-יסודי. תכנות, אלגוריתמיקה, בינה מלאכותית וסייבר.',pills:['Python','אלגוריתמיקה','AI','סייבר'],jobs:'מורה לתקשוב, מדריך קידוד, יועץ טכנולוגי',admission:'בגרות 85+',tuition:'₪12,017'},
+  {key:'h1',fac:'hum',name:'שפה וספרות אנגלית',degree:'B.Ed + תעודת הוראה',dur:'4 שנים',campus:'נמיר 149, ת"א',lang:'עברית ואנגלית',desc:'הכשרה להוראת אנגלית כשפה זרה. לימודים ספרותיים, בלשניים ולינגוויסטיים, לצד שיטות מודרניות.',pills:['ספרות אנגלית','לינגוויסטיקה','הוראת שפה'],jobs:'מורה לאנגלית, יועץ שפה, מתרגם',admission:'בגרות 85+',tuition:'₪12,017'},
+  {key:'h2',fac:'hum',name:'חינוך בלתי פורמלי',degree:'B.Ed',dur:'4 שנים',campus:'נמיר 149, ת"א',lang:'עברית',desc:'הכשרה לפעולה מחוץ לכיתה: תנועות נוער, קהילות, מחנות ותכניות העשרה.',pills:['מנהיגות','הנחיית קבוצות','חינוך בטבע','תנועות נוער'],jobs:"מדריך/ה בתנועת נוער, רכז קהילה, מנהל תכנית",admission:'בגרות 85+',tuition:'₪12,017'},
+  {key:'a1',fac:'arts',name:'שחקנים יוצרים (תיאטרון)',degree:'B.Ed F.A + תעודת הוראה',dur:'3 שנים',campus:'קמפוס האמנויות',lang:'עברית',desc:"פיתוח שחקנים יוצרים: בימוי, דרמטורגיה, כתיבה ויצירה עצמאית. עבודה מעשית בבתי ספר. ימי מיונים: 30.6, 14.7, 28.7, 11.8, 25.8.2026 (11:00–14:00).",pills:['משחק','בימוי','דרמטורגיה','כתיבה'],jobs:'מורה לתיאטרון, שחקן/ית, במאי/ת',admission:"בגרות 80+ + תעודת ביה\"ס למשחק + יום מיונים",tuition:'₪12,017'},
+  {key:'sp1',fac:'special',name:'הסבת אקדמאים רשותית',degree:'תעודת הוראה',dur:'שנה',campus:'אזור מגורים + זום',lang:'עברית',desc:"שיתוף בין המכללה לרשויות מקומיות. ב' 08:00–21:00 פיזי, ו' 08:00–14:00 סינכרוני. מסלולים: גיל רך, יסודי, על-יסודי, חינוך מיוחד, אנגלית, מתמטיקה ועוד.",pills:['גיל רך','יסודי','על-יסודי','חינוך מיוחד','רשות'],jobs:'מורה/גננת ברשות המקומית',admission:'תואר אקדמי',tuition:'בתיאום עם הרשות'},
+  {key:'sp2',fac:'special',name:'רחוק-קרוב (70+ ק"מ)',degree:'תעודת הוראה',dur:'שנה',campus:'אזור מגורים (70+ ק"מ)',lang:'עברית',desc:'לאקדמאים המתגוררים 70+ ק"מ מהמכללה. למידה מרחוק והתנסות מעשית קרוב לבית.',pills:['מרחק','למידה מרחוק','גיל רך','יסודי'],jobs:'מורה/גננת באזור המגורים',admission:'תואר אקדמי + 70+ ק"מ מהמכללה',tuition:'בתיאום'},
+  {key:'sp3',fac:'special',name:'ברוח היער',degree:'תעודת הוראה',dur:'שנה',campus:'יער עין כרם',lang:'עברית',desc:"חינוך יער לבעלי תואר. ד' 08:00–19:30 ביער, ו' 08:30–14:00. 4 סמינרים עם לינת שטח. לימוד ממשי בטבע.",pills:['חינוך יער','טבע','גיל רך','יסודי'],jobs:'גננת/מורה חינוך יער',admission:'תואר אקדמי + תשוקה לטבע',tuition:'בתיאום'},
+  {key:'sp4',fac:'special',name:'CompleTEach',degree:'תעודת הוראה',dur:'שנה',campus:'בתי ספר נבחרים',lang:'עברית',desc:'הכשרה מהיום הראשון בתוך בית הספר. PBL, למידה מבוססת מקום, חונכות צמודה.',pills:['PBL','חינוך פרוגרסיבי','בית ספר','חונכות'],jobs:'מורה בביה"ס פרוגרסיבי',admission:'תואר אקדמי',tuition:'בתיאום'},
+  {key:'sp5',fac:'special',name:'LICBT – טיפול קוגניטיבי-התנהגותי',degree:'תעודה מקצועית',dur:'שנה (זום)',campus:'מקוון',lang:'עברית',desc:'300 שעות: 150 עיון + 50 הדרכה + 100 סטאז\'. ג\' 16:30–21:00. שכר: ₪12,500 + ₪531 אגרות.',pills:['CBT','חרדה','דיכאון','סטאז\''],jobs:"מטפל/ת קוגניטיבי-התנהגותי",admission:'תואר רלוונטי',tuition:'₪12,500'},
+  {key:'sp6',fac:'special',name:'תרפיות M.A – אמנות/ביבליו/פסיכודרמה/תנועה',degree:'M.A',dur:'2 שנים',campus:'קמפוס מרכזי',lang:'עברית',desc:'600 שעות התנסות מעשית. שנה א\': יום בשבוע בוקר. שנה ב\': יום מלא + חצי. מקומות: בתי חולים, שיקום, ארגון עמך.',pills:['אמנות-תרפיה','ביבליותרפיה','פסיכודרמה','תנועה'],jobs:'מטפל/ת באמצעות אמנות, פסיכודרמטיסט/ית',admission:'תואר ראשון + ראיון',tuition:'בתיאום'},
+  {key:'sp7',fac:'special',name:'הסבה לחינוך מיוחד (אלומות)',degree:'תעודת הוראה',dur:'שנה',campus:'שיתוף ארגון אלומות',lang:'עברית',desc:'מסלול לחינוך מיוחד גיל ההתבגרות (13–21), תוכניות מעבר לחיים עצמאיים. מפגשי חשיפה: 16.7 ו-7.8 ב-19:00.',pills:['חינוך מיוחד','מתבגרים','עצמאות','אלומות'],jobs:'מורה חינוך מיוחד, מתאם/ת מעברים',admission:'תואר אקדמי',tuition:'אפשרות מלגות'},
+];
+
+const procedures = [
+  {icon:'📝',color:'var(--green)',title:'תהליך ההרשמה וקבלה',body:`<ol style="padding-right:1.2rem;line-height:2.1;font-size:13px"><li>רישום מקוון – <strong>₪350</strong> (יום פתוח: ₪100)</li><li>העלאת מסמכים וגיליונות ציונים</li><li>זימון לוועדת קבלה</li></ol><p style="font-size:11px;color:var(--text3);margin-top:.4rem">* דמי הרשמה לא יוחזרו</p>`},
+  {icon:'💰',color:'var(--gold)',title:'שכר לימוד ותשלומים',body:`<div style="font-size:13px;line-height:2"><div>📌 שכר לימוד תשפ"ו: <strong>₪12,017</strong></div><div>📌 מקדמה: <strong>₪1,500</strong></div><div>📌 פורטל תשלומים: <a href="https://portal.smkb.ac.il/Portals/student/payments" style="color:var(--green)">portal.smkb.ac.il</a></div><div>📌 שאלות: Scharlimud.Skb@smkb.ac.il | 036902342</div><div>📌 שעות מענה: 12:00–15:00</div></div>`},
+  {icon:'🛑',color:'var(--red)',title:'הפסקת לימודים',body:`<div style="font-size:13px;line-height:2"><div>⚠️ הודעה <strong>בכתב בלבד</strong></div><div>📧 MinhalLom.Skb@smkb.ac.il</div><div>✅ אישור ב-SMS לסטודנט</div><div>❌ הודעה טלפונית <strong>לא מספיקה</strong></div></div>`},
+  {icon:'🌐',color:'var(--blue)',title:'דרישות אנגלית',body:`<table style="font-size:12px;border-collapse:collapse;width:100%"><tr style="background:var(--bg)"><th style="padding:5px 8px;text-align:right;border:1px solid var(--border)">רמה</th><th style="padding:5px 8px;border:1px solid var(--border)">אמיר"ם</th><th style="padding:5px 8px;border:1px solid var(--border)">קורסים</th></tr><tr><td style="padding:4px 8px;border:1px solid var(--border)">טרום בסיסי א'</td><td style="padding:4px 8px;border:1px solid var(--border)">50–69</td><td style="padding:4px 8px;border:1px solid var(--border)">5</td></tr><tr style="background:var(--bg)"><td style="padding:4px 8px;border:1px solid var(--border)">בסיסי</td><td style="padding:4px 8px;border:1px solid var(--border)">85–99</td><td style="padding:4px 8px;border:1px solid var(--border)">3</td></tr><tr><td style="padding:4px 8px;border:1px solid var(--border)">מתקדמים א'</td><td style="padding:4px 8px;border:1px solid var(--border)">100–119</td><td style="padding:4px 8px;border:1px solid var(--border)">2</td></tr><tr style="background:var(--green-p)"><td style="padding:4px 8px;border:1px solid var(--border);font-weight:700">פטור</td><td style="padding:4px 8px;border:1px solid var(--border);font-weight:700">134+</td><td style="padding:4px 8px;border:1px solid var(--border);font-weight:700">—</td></tr></table>`},
+  {icon:'🎖️',color:'#9B59B6',title:'מתווה מילואים תשפ"ו',body:`<div style="font-size:13px;line-height:2"><div><strong>קבוצה 1</strong> (עד 21 יום): פטור 4 נ"ז</div><div><strong>קבוצה 2</strong> (21+ יום): פטור 6 נ"ז + גמישות</div><div><strong>קבוצה 3</strong> (35+ יום): פטור 10 נ"ז</div><div><strong>קבוצה 4</strong> (שירות ייעודי 300+): פטור 10 נ"ז</div><div>📧 siuadiknt@smkb.ac.il | 03-6901292</div></div>`},
+];
+
+// ═══════════════ LOGIN ═══════════════
+function selectRole(r){
+  currentRole=r;
+  document.getElementById('role-advisor').classList.toggle('sel',r==='advisor');
+  document.getElementById('role-manager').classList.toggle('sel',r==='manager');
+}
+function doLogin(){
+  const name=document.getElementById('login-name').value.trim();
+  const pass=document.getElementById('login-pass').value;
+  if(!name){alert('נא להכניס שם');return}
+  if(currentRole==='manager'&&pass!=='smkb2025'){alert('סיסמת מנהל שגויה');return}
+  currentUser=name;
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').classList.add('show');
+  initApp();
+  setTimeout(()=>showPop(0),1800);
+}
+
+function resetPass(){
+  const email = document.getElementById('login-email').value.trim();
+  if(!email){ alert('הכנס/י כתובת מייל תחילה'); return; }
+  if(window.fbFns && window.fbAuth){
+    window.fbFns.sendPasswordResetEmail(window.fbAuth, email)
+      .then(()=>alert('נשלח מייל לאיפוס סיסמה ל: '+email))
+      .catch(e=>alert('שגיאה: '+e.message));
+  }
+}
+
+function doLogout(){
+  if(window.firebaseLogout) window.firebaseLogout();
+  document.getElementById('app').classList.remove('show');
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('login-name').value='';
+  document.getElementById('login-pass').value='';
+}
+
+
+// ═══════════════ USERS MANAGEMENT ═══════════════
+async function renderUsers(){
+  const el = document.getElementById('page-users');
+  el.innerHTML = `<div class="card" style="margin-bottom:1rem">
+    <div class="sec-title" style="margin-bottom:1rem">➕ הוסף משתמש חדש</div>
+    <div class="g2">
+      <div class="fg"><label>שם מלא</label><input type="text" id="nu-name" placeholder="שם המשתמש"></div>
+      <div class="fg"><label>דוא"ל</label><input type="email" id="nu-email" placeholder="email@smkb.ac.il"></div>
+      <div class="fg"><label>סיסמה</label><input type="password" id="nu-pass" placeholder="לפחות 6 תווים"></div>
+      <div class="fg"><label>תפקיד</label>
+        <select id="nu-role">
+          <option value="advisor">יועץ/ת לימודים</option>
+          <option value="knowledge">מנהל/ת ידע</option>
+          <option value="manager">מנהל/ת משמרת</option>
+        </select>
+      </div>
+    </div>
+    <button class="sub-btn mt" onclick="addUser()">הוסף משתמש ›</button>
+    <div class="ok-msg" id="add-user-ok">✅ המשתמש נוסף בהצלחה!</div>
+    <div class="ok-msg" id="add-user-err" style="background:var(--red-p);color:var(--red)"></div>
+  </div>
+  <div class="card">
+    <div class="sec-title" style="margin-bottom:1rem">👥 משתמשים רשומים</div>
+    <div id="users-list"><div style="color:var(--text3);font-size:13px">טוען...</div></div>
+  </div>`;
+
+  // Load users
+  const users = await window.getAllUsers();
+  const roleLabels = {advisor:'יועץ/ת לימודים', manager:'מנהל/ת משמרת', knowledge:'מנהל/ת ידע'};
+  const roleColors = {advisor:'g', manager:'go', knowledge:'b'};
+  const ul = document.getElementById('users-list');
+  if(!ul) return;
+  if(!users.length){ ul.innerHTML='<div style="color:var(--text3);font-size:13px">אין משתמשים עדיין.</div>'; return; }
+  ul.innerHTML = users.map(u=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:34px;height:34px;border-radius:50%;background:var(--green-p);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--green-d)">
+          ${(u.name||'?')[0].toUpperCase()}
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:700">${u.name||'—'}</div>
+          <div style="font-size:11px;color:var(--text3)">${u.email||'—'}</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="chip ${roleColors[u.role]||'g'}">${roleLabels[u.role]||u.role}</span>
+        <span style="font-size:11px;color:var(--text3)">${u.lastLogin?'נכנס: '+new Date(u.lastLogin).toLocaleDateString('he-IL'):'טרם נכנס'}</span>
+      </div>
+    </div>`).join('');
+}
+
+async function addUser(){
+  const name  = document.getElementById('nu-name')?.value.trim();
+  const email = document.getElementById('nu-email')?.value.trim();
+  const pass  = document.getElementById('nu-pass')?.value;
+  const role  = document.getElementById('nu-role')?.value;
+  if(!name||!email||!pass){ alert('נא למלא את כל השדות'); return; }
+  if(pass.length < 6){ alert('סיסמה חייבת להיות לפחות 6 תווים'); return; }
+  const result = await window.addUserToSystem(name, email, pass, role);
+  if(result.success){
+    document.getElementById('add-user-ok').classList.add('show');
+    setTimeout(()=>{ document.getElementById('add-user-ok').classList.remove('show'); renderUsers(); },2000);
+    document.getElementById('nu-name').value='';
+    document.getElementById('nu-email').value='';
+    document.getElementById('nu-pass').value='';
+  } else {
+    const errEl = document.getElementById('add-user-err');
+    errEl.textContent = '❌ שגיאה: ' + result.error;
+    errEl.classList.add('show');
+    setTimeout(()=>errEl.classList.remove('show'),4000);
+  }
+}
+
+// ═══════════════ INIT ═══════════════
+function initApp(){
+  const parts=currentUser.split(' ');
+  const init=(parts[0]?.[0]||'')+(parts[1]?.[0]||'');
+  document.getElementById('sb-init').textContent=init.toUpperCase()||'?';
+  document.getElementById('sb-name').textContent=currentUser;
+  const badge=document.getElementById('sb-role-badge');
+  badge.textContent=currentRole==='manager'?'מנהל/ת משמרת':'יועץ/ת לימודים';
+  badge.className='sb-role-badge '+(currentRole==='manager'?'manager':'advisor');
+  buildNav();
+  renderPage('dashboard');
+}
+
+function buildNav(){
+  const isM=currentRole==='manager';
+  const links=[
+    {page:'dashboard',icon:'🏠',label:'לוח בקרה',show:true},
+    {sec:'לומדה מקצועית',show:!isM},
+    {page:'learning',icon:'📚',label:'מסלולי לימוד',show:!isM},
+    {page:'procedures',icon:'📋',label:'נהלי עבודה',show:!isM},
+    {sec:'עבודה שוטפת',show:true},
+    {page:'shifts',icon:'📅',label:'אילוצי משמרות',show:!isM},
+    {page:'messages',icon:'💬',label:isM?'צ\'אט עם יועצים':'פניות למנהל',show:true},
+    {page:'notifications',icon:'🔔',label:'התראות',badge:'notif-badge',show:true},
+    {sec:'ניהול',show:isM},
+    {page:'inbox',icon:'📥',label:'תיבת פניות',badge:'inbox-badge',show:isM},
+    {sec:'אישי',show:true},
+    {page:'users',icon:'👥',label:'ניהול משתמשים',show:isM},
+    {page:'profile',icon:'👤',label:'אזור אישי',show:true},
+  ];
+  let html='';
+  links.forEach(l=>{
+    if(!l.show)return;
+    if(l.sec){html+=`<div class="nav-sec">${l.sec}</div>`;return}
+    html+=`<div class="nav-item" id="nav-${l.page}" onclick="navigate('${l.page}')">
+      <span class="nav-icon">${l.icon}</span>
+      <span class="nav-label">${l.label}</span>
+      ${l.badge?`<span class="nav-badge" id="${l.badge}" style="display:none">0</span>`:''}
+    </div>`;
+  });
+  document.getElementById('nav-links').innerHTML=html;
+}
+
+// ═══════════════ NAVIGATION ═══════════════
+const pageTitles={dashboard:'לוח בקרה',users:'ניהול משתמשים',learning:'מסלולי לימוד',procedures:'נהלי עבודה',shifts:'אילוצי משמרות',messages:'פניות ותקשורת',notifications:'התראות ועדכונים',inbox:'תיבת פניות יועצים',profile:'אזור אישי'};
+const pageSubs={dashboard:'סקירה כללית',users:'הוסף וערוך משתמשים',learning:'כל המסלולים לפי פקולטות',procedures:'נהלים ותהליכים',shifts:'שיבוץ שבועי',messages:'ממשק פנימי',notifications:'עדכונים מקצועיים',inbox:'ניהול פניות',profile:'פרטים אישיים ולוגו'};
+
+function navigate(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const pg=document.getElementById('page-'+page);
+  if(pg)pg.classList.add('active');
+  const ni=document.getElementById('nav-'+page);
+  if(ni)ni.classList.add('active');
+  document.getElementById('tb-title').textContent=pageTitles[page]||page;
+  document.getElementById('tb-sub').textContent=pageSubs[page]||'';
+  renderPage(page);
+  closeSidebar();
+}
+
+function renderPage(p){
+  if(p==='dashboard')renderDash();
+  else if(p==='learning')renderLearning();
+  else if(p==='procedures')renderProc();
+  else if(p==='shifts')renderShifts();
+  else if(p==='messages')renderMessages();
+  else if(p==='notifications')renderNotifs();
+  else if(p==='inbox')renderInbox();
+  else if(p==='profile')renderProfile();
+  else if(p==='users')renderUsers();
+}
+
+// ═══════════════ DASHBOARD ═══════════════
+function renderDash(){
+  const isM=currentRole==='manager';
+  const unread=notifications.filter(n=>!n.read).length;
+  const openReq=requests.filter(r=>r.status==='פתוח').length;
+  document.getElementById('page-dashboard').innerHTML=`
+    <div class="g4" style="margin-bottom:1rem">
+      <div class="stat g"><div class="stat-n">${tracks.length}</div><div class="stat-l">מסלולי לימוד</div><div class="stat-ico">📚</div></div>
+      <div class="stat go"><div class="stat-n" id="d-shifts">—</div><div class="stat-l">משמרות שנשלחו</div><div class="stat-ico">📅</div></div>
+      <div class="stat b"><div class="stat-n">${unread}</div><div class="stat-l">עדכונים שלא נקראו</div><div class="stat-ico">🔔</div></div>
+      <div class="stat r"><div class="stat-n">${openReq}</div><div class="stat-l">פניות פתוחות</div><div class="stat-ico">💬</div></div>
+    </div>
+    <div class="g2">
+      <div>
+        <div class="sec-hdr"><span class="sec-title">🔔 עדכונים אחרונים</span><span class="sec-action" onclick="navigate('notifications')">הכל ›</span></div>
+        <div class="notif-list">
+          ${notifications.slice(0,3).map((n,i)=>`
+          <div class="notif-item${n.read?'':' unread'}" onclick="showPop(${i})">
+            <div class="ni-icon ${n.type}">${n.icon}</div>
+            <div style="flex:1"><div class="ni-title">${n.title}</div><div class="ni-text">${n.text.slice(0,60)}...</div><div class="ni-meta">${n.date}</div></div>
+            ${n.read?'':'<div class="ud"></div>'}
+          </div>`).join('')}
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.9rem">
+        <div class="card">
+          <div class="sec-title">⚡ פעולות מהירות</div>
+          <div style="display:flex;flex-direction:column;gap:7px;margin-top:.6rem">
+            ${!isM?`<button class="tb-btn" style="width:100%;justify-content:center" onclick="navigate('learning')">📚 פתח לומדה</button>`:''}
+            <button class="tb-btn" style="width:100%;justify-content:center" onclick="navigate('shifts')">📅 אילוצי משמרת</button>
+            <button class="tb-btn primary" style="width:100%;justify-content:center" onclick="navigate('messages')">✉️ ${isM?'ניהול פניות':'פנייה למנהל'}</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="sec-title">📞 יצירת קשר</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.9;margin-top:.4rem">
+            <div>☎️ 03-6901200</div>
+            <div>✉️ smkb@smkb.ac.il</div>
+            <div>📍 נמיר 149, ת"א</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ═══════════════ LEARNING ═══════════════
+function renderLearning(){
+  const el=document.getElementById('page-learning');
+  el.innerHTML=`
+    <div id="learn-detail" class="hidden"></div>
+    <div class="fac-tabs">
+      <div class="fac-tab active" onclick="setFac('all',this)">הכל (${tracks.length})</div>
+      ${Object.entries(facColors).map(([k,v])=>`<div class="fac-tab" onclick="setFac('${k}',this)">${v.label.replace('פקולטת ','')}</div>`).join('')}
+    </div>
+    <div class="tracks-grid" id="tracks-grid"></div>`;
+  selFac='all';selTrack=null;
+  buildTracks();
+}
+function setFac(f,el){
+  selFac=f;selTrack=null;
+  document.getElementById('learn-detail').classList.add('hidden');
+  document.querySelectorAll('.fac-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  buildTracks();
+}
+function buildTracks(){
+  const list=selFac==='all'?tracks:tracks.filter(t=>t.fac===selFac);
+  document.getElementById('tracks-grid').innerHTML=list.map(t=>`
+    <div class="track-card ${t.fac}${selTrack===t.key?' sel':''}" onclick="showTrack('${t.key}')">
+      <div class="tr-name">${t.name}</div>
+      <div class="tr-deg">${t.degree}</div>
+    </div>`).join('');
+}
+function showTrack(key){
+  selTrack=key;
+  const t=tracks.find(x=>x.key===key);
+  const fc=facColors[t.fac];
+  const det=document.getElementById('learn-detail');
+  det.classList.remove('hidden');
+  det.innerHTML=`
+    <div class="detail-panel">
+      <div class="det-hdr">
+        <div>
+          <div class="det-badge" style="background:${fc.bg};color:${fc.color}">${fc.label}</div>
+          <div class="det-title">${t.name}</div>
+          <div class="det-deg">${t.degree}</div>
+          <div class="meta-chips">
+            <div class="mc">⏱ ${t.dur}</div><div class="mc">📍 ${t.campus}</div>
+            <div class="mc">🌐 ${t.lang}</div><div class="mc">💰 ${t.tuition}</div>
+          </div>
+        </div>
+        <button class="close-x" onclick="closeTrack()">✕ סגור</button>
+      </div>
+      <div class="det-body">
+        <div>
+          <div class="d-lbl">אודות המסלול</div>
+          <div class="d-txt">${t.desc.replace(/\n/g,'<br>')}</div>
+          <div class="mt"><div class="d-lbl">תחומי לימוד</div><div class="pills">${t.pills.map(p=>`<span class="pill">${p}</span>`).join('')}</div></div>
+        </div>
+        <div>
+          <div class="d-lbl">תנאי קבלה</div><div class="d-txt">${t.admission}</div>
+          <div class="mt"><div class="d-lbl">הזדמנויות תעסוקה</div><div class="d-txt">${t.jobs}</div></div>
+          <div class="mt" style="display:flex;gap:6px;flex-wrap:wrap">
+            <a href="mailto:smkb@smkb.ac.il?subject=שאלה על ${t.name}" class="tb-btn" style="font-size:11px;text-decoration:none">✉️ שאל</a>
+            <a href="tel:036901200" class="tb-btn" style="font-size:11px;text-decoration:none">📞 התקשר</a>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  det.scrollIntoView({behavior:'smooth',block:'nearest'});
+  buildTracks();
+}
+function closeTrack(){selTrack=null;document.getElementById('learn-detail').classList.add('hidden');buildTracks();}
+
+// ═══════════════ PROCEDURES ═══════════════
+function renderProc(){
+  document.getElementById('page-procedures').innerHTML=procedures.map(p=>`
+    <div class="card" style="border-right:4px solid ${p.color};margin-bottom:.75rem">
+      <div class="flex" style="margin-bottom:.6rem"><span style="font-size:18px">${p.icon}</span><div class="sec-title" style="margin:0">${p.title}</div></div>
+      ${p.body}
+    </div>`).join('');
+}
+
+// ═══════════════ SHIFTS ═══════════════
+
+const SHIFT_TYPES = [
+  {id:'morning', label:'בוקר 08:00–17:00', color:'var(--green)', bg:'var(--green-p)', icon:'🌅'},
+  {id:'late',    label:'מאוחר 10:00–18:00', color:'#0C447C',     bg:'#E6F1FB',       icon:'🕙'},
+  {id:'friday',  label:'שישי (בהתאם)',       color:'#D4860A',     bg:'#FEF3DC',       icon:'📅'},
+  {id:'sick',    label:'מחלה',               color:'#C0392B',     bg:'#FDECEA',       icon:'🤒'},
+  {id:'vacation',label:'חופש',               color:'#6c3483',     bg:'#F3ECFC',       icon:'🏖️'},
+  {id:'halal',   label:'חל"ד',               color:'#085041',     bg:'#E1F5EE',       icon:'📋'},
+  {id:'reserve', label:'מילואים',            color:'#633806',     bg:'#FAEEDA',       icon:'🎖️'},
+  {id:'other',   label:'אחר',                color:'#5C5B56',     bg:'#F1EFE8',       icon:'✏️'},
+  {id:'off',     label:'לא זמין',            color:'#C0392B',     bg:'#FDECEA',       icon:'❌'},
+];
+
+// weekDays state: {day: {type, note}}
+let weekSchedule = {};
+const workDays = ['ראשון','שני','שלישי','רביעי','חמישי','שישי'];
+workDays.forEach(d => weekSchedule[d] = {type:'', note:''});
+
+function renderShifts(){
+  const isM = currentRole === 'manager';
+  document.getElementById('page-shifts').innerHTML = isM ? renderManagerShifts() : renderAdvisorShifts();
+  if(!isM) initAdvisorShifts();
+}
+
+function renderAdvisorShifts(){
+  return `
+  <div style="margin-bottom:1rem">
+    <div class="sec-title" style="margin-bottom:.4rem">📅 דיווח שבועי – ${currentUser}</div>
+    <div style="font-size:12px;color:var(--text3)">בחר סוג משמרת לכל יום. לחץ על התא לשינוי.</div>
+  </div>
+
+  <div class="card" style="margin-bottom:1rem;overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;min-width:500px" id="shift-table">
+      <thead>
+        <tr>
+          <th style="padding:8px 10px;text-align:right;font-size:12px;font-weight:700;color:var(--text3);border-bottom:1px solid var(--border)">יום</th>
+          <th style="padding:8px 10px;text-align:center;font-size:12px;font-weight:700;color:var(--text3);border-bottom:1px solid var(--border)">סוג משמרת</th>
+          <th style="padding:8px 10px;text-align:right;font-size:12px;font-weight:700;color:var(--text3);border-bottom:1px solid var(--border)">הערה</th>
+        </tr>
+      </thead>
+      <tbody id="shift-tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="card" style="margin-bottom:1rem">
+    <div class="sec-title" style="margin-bottom:.75rem">🎯 אילוצים קבועים</div>
+    <div class="g2">
+      <div class="fg">
+        <label>ימים שלא יכול/ה בכלל</label>
+        <input type="text" id="constraint-days" placeholder="לדוגמה: שישי, ראשון">
+      </div>
+      <div class="fg">
+        <label>שעות מגבלה</label>
+        <input type="text" id="constraint-hours" placeholder="לדוגמה: לא לפני 09:00 בשני">
+      </div>
+      <div class="fg full" style="grid-column:1/-1">
+        <label>הערות כלליות</label>
+        <textarea id="shift-notes" placeholder="כל מידע נוסף שחשוב למנהל המשמרת..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex">
+    <button class="sub-btn" onclick="submitShift()">שלח למנהל המשמרת ›</button>
+    <button class="close-x" onclick="resetShift()">אפס הכל</button>
+  </div>
+  <div class="ok-msg" id="shift-ok">✅ הדיווח נשלח למנהל!</div>
+
+  <div class="card mt2">
+    <div class="sec-title" style="margin-bottom:.75rem">📋 דיווחים קודמים</div>
+    <div id="sent-list" style="font-size:12px;color:var(--text3)">אין דיווחים.</div>
+  </div>`;
+}
+
+function initAdvisorShifts(){
+  buildShiftTable();
+}
+
+function buildShiftTable(){
+  const tbody = document.getElementById('shift-tbody');
+  if(!tbody) return;
+  tbody.innerHTML = workDays.map(day => {
+    const curr = weekSchedule[day];
+    const st = SHIFT_TYPES.find(s => s.id === curr.type);
+    return `<tr style="border-bottom:0.5px solid var(--border)">
+      <td style="padding:8px 10px;font-size:13px;font-weight:700;white-space:nowrap">${day}</td>
+      <td style="padding:6px 10px;text-align:center">
+        <div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center">
+          ${SHIFT_TYPES.map(s => `
+            <button onclick="setDayShift('${day}','${s.id}')" 
+              style="padding:4px 8px;border-radius:6px;border:1.5px solid ${curr.type===s.id?s.color:' var(--border)'};
+              background:${curr.type===s.id?s.bg:'transparent'};
+              color:${curr.type===s.id?s.color:'var(--text3)'};
+              font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap">
+              ${s.icon} ${s.label}
+            </button>`).join('')}
+        </div>
+      </td>
+      <td style="padding:6px 10px">
+        <input type="text" value="${curr.note||''}" 
+          onchange="setDayNote('${day}',this.value)"
+          placeholder="הערה..." 
+          style="width:100%;min-width:120px;font-size:12px;padding:5px 8px">
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function setDayShift(day, type){
+  weekSchedule[day].type = weekSchedule[day].type === type ? '' : type;
+  buildShiftTable();
+}
+function setDayNote(day, note){ weekSchedule[day].note = note; }
+
+function resetShift(){
+  workDays.forEach(d => weekSchedule[d] = {type:'', note:''});
+  buildShiftTable();
+  const n = document.getElementById('shift-notes'); if(n) n.value='';
+  const cd = document.getElementById('constraint-days'); if(cd) cd.value='';
+  const ch = document.getElementById('constraint-hours'); if(ch) ch.value='';
+}
+
+function submitShift(){
+  const summary = workDays.map(d => {
+    const s = weekSchedule[d];
+    const st = SHIFT_TYPES.find(x => x.id === s.type);
+    return `${d}: ${st ? st.label : '—'}${s.note?' ('+s.note+')':''}`;
+  }).join(' | ');
+
+  const notes = document.getElementById('shift-notes')?.value || '';
+  const cdays = document.getElementById('constraint-days')?.value || '';
+  const chours = document.getElementById('constraint-hours')?.value || '';
+
+  const payload = {
+    from: currentUser,
+    uid: window.firebaseUser?.uid || '',
+    week: workDays.reduce((acc,d) => { acc[d] = weekSchedule[d]; return acc; }, {}),
+    constraints: { days: cdays, hours: chours },
+    notes,
+    summary,
+    status: 'ממתין',
+    date: new Date().toLocaleDateString('he-IL'),
+    timestamp: new Date().toISOString()
+  };
+
+  if(window.saveShiftToFirebase) window.saveShiftToFirebase(payload);
+
+  const sl = document.getElementById('sent-list');
+  if(sl){
+    sl.innerHTML = `<div style="padding:8px 0;border-bottom:1px solid var(--border)">
+      <div style="font-weight:700;font-size:12px">${new Date().toLocaleDateString('he-IL')}</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:3px">${summary}</div>
+      ${notes?`<div style="font-size:11px;color:var(--text3)">הערות: ${notes}</div>`:''}
+    </div>` + sl.innerHTML;
+  }
+  const ok = document.getElementById('shift-ok');
+  if(ok){ ok.classList.add('show'); setTimeout(()=>ok.classList.remove('show'),3000); }
+}
+
+// ── MANAGER SHIFTS VIEW ──
+function renderManagerShifts(){
+  return `
+  <div class="g2">
+    <div>
+      <div class="sec-hdr">
+        <span class="sec-title">📋 דיווחי יועצים</span>
+        <span class="chip g" id="pending-count">טוען...</span>
+      </div>
+      <div id="manager-shifts-list" style="font-size:13px;color:var(--text3)">טוען נתונים...</div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:.9rem">
+        <div class="sec-title" style="margin-bottom:.75rem">🤖 סידור עבודה AI</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8;margin-bottom:.75rem">
+          לחץ כדי שה-AI יצור סידור עבודה אופטימלי לפי האילוצים של כל היועצים.
+        </div>
+        <div class="fg">
+          <label>שבוע</label>
+          <input type="text" id="ai-week" placeholder="לדוגמה: 25.5–29.5.2025">
+        </div>
+        <div class="fg">
+          <label>מספר יועצים נדרש בכל יום</label>
+          <input type="number" id="ai-count" value="3" min="1" max="10">
+        </div>
+        <button class="sub-btn" onclick="buildAISchedule()" style="width:100%;margin-top:.5rem">🤖 צור סידור עבודה ›</button>
+        <div class="ok-msg" id="ai-ok">✅ הסידור נוצר!</div>
+      </div>
+      <div class="card" id="ai-schedule-card" style="display:none">
+        <div class="sec-title" style="margin-bottom:.75rem">📊 הצעת סידור</div>
+        <div id="ai-schedule-result"></div>
+        <div class="flex mt" style="flex-wrap:wrap;gap:6px">
+          <button class="sub-btn" onclick="approveSchedule()">✅ אשר ושלח ליועצים</button>
+          <button class="close-x" onclick="document.getElementById('ai-schedule-card').style.display='none'">בטל</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+async function buildAISchedule(){
+  const week = document.getElementById('ai-week')?.value || 'השבוע';
+  const count = parseInt(document.getElementById('ai-count')?.value) || 3;
+
+  const btn = document.querySelector('[onclick="buildAISchedule()"]');
+  if(btn){ btn.textContent = '🤖 בונה סידור...'; btn.disabled = true; }
+
+  // Collect all shifts from Firebase
+  let shiftsData = [];
+  try {
+    const { ref: dbRef, get } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js");
+    const snap = await get(dbRef(window.fbDb, 'shifts'));
+    if(snap.exists()){
+      const all = snap.val();
+      shiftsData = Object.values(all).slice(-20); // last 20 reports
+    }
+  } catch(e){ console.error(e); }
+
+  // Build AI prompt
+  const prompt = `אתה מנהל משמרות במרכז ייעוץ ורישום אקדמי.
+יש לך יועצי לימודים עם המשמרות הבאות: בוקר 08:00-17:00 ומאוחר 10:00-18:00.
+לפעמים יש עבודה בשישי.
+
+הנתונים שהתקבלו:
+${JSON.stringify(shiftsData.slice(0,5), null, 2)}
+
+צור סידור עבודה לשבוע ${week} עם ${count} יועצים בכל יום.
+החזר טבלה קצרה בעברית עם: יום | יועץ | משמרת | הערות.
+התחשב באילוצים שדווחו. אם חסרים נתונים, סמן כ"לתיאום".
+ענה בעברית בלבד, ישיר וקצר.`;
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    const data = await response.json();
+    const result = data.content?.[0]?.text || 'לא הצלחתי לבנות סידור. נסה שוב.';
+
+    const card = document.getElementById('ai-schedule-card');
+    const res = document.getElementById('ai-schedule-result');
+    if(card && res){
+      res.innerHTML = `<div style="font-size:13px;line-height:1.8;white-space:pre-wrap;color:var(--text)">${result}</div>`;
+      card.style.display = 'block';
+    }
+    const ok = document.getElementById('ai-ok');
+    if(ok){ ok.classList.add('show'); setTimeout(()=>ok.classList.remove('show'),2500); }
+
+  } catch(e){
+    alert('שגיאה בחיבור ל-AI: ' + e.message);
+  }
+
+  if(btn){ btn.textContent = '🤖 צור סידור עבודה ›'; btn.disabled = false; }
+}
+
+function approveSchedule(){
+  const content = document.getElementById('ai-schedule-result')?.innerText || '';
+  if(window.saveNotifToFirebase){
+    window.saveNotifToFirebase({
+      type:'admin',
+      title:'סידור עבודה שבועי',
+      text: content,
+      sentBy: currentUser
+    });
+  }
+  alert('✅ הסידור נשלח לכל היועצים כהתראה!');
+  document.getElementById('ai-schedule-card').style.display = 'none';
+}
+
+// ═══════════════ MESSAGES ═══════════════
+function renderMessages(){
+  const isM=currentRole==='manager';
+  document.getElementById('page-messages').innerHTML=`
+    <div class="g2">
+      <div class="card">
+        <div class="sec-title">💬 ${isM?'צ\'אט עם יועצים':'שיחה עם המנהל'}</div>
+        <div class="chat-wrap" id="chat-wrap">
+          ${messages.map(m=>{
+            const isMine=(isM&&m.role==='manager')||(!isM&&m.role==='advisor');
+            return `<div class="bubble ${isMine?'sent':m.role==='manager'?'recv manager-sent':'recv'}">${m.text}<span class="btime">${m.time}</span></div>`;
+          }).join('')}
+        </div>
+        <div class="chat-input">
+          <input type="text" id="chat-in" placeholder="כתוב הודעה..." onkeypress="if(event.key==='Enter')sendChat()">
+          <button class="chat-send" onclick="sendChat()">שלח</button>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:.75rem">
+          <div class="sec-title">📝 ${isM?'שלח הודעה לכולם':'פנייה מסודרת'}</div>
+          <div class="fg"><label>נושא</label>
+            <select id="req-type"><option>שאלה מקצועית</option><option>בקשה טכנית</option><option>עדכון מידע</option><option>בקשה אדמינסטרטיבית</option><option>אחר</option></select>
+          </div>
+          <div class="fg"><label>תוכן</label><textarea id="req-text" placeholder="${isM?'הודעה לכל היועצים...':'תאר את שאלתך/בקשתך...'}"></textarea></div>
+          <button class="sub-btn" onclick="sendRequest()">שלח ›</button>
+          <div class="ok-msg" id="req-ok">✅ נשלח!</div>
+        </div>
+        <div class="card">
+          <div class="sec-title">📋 פניות אחרונות</div>
+          <div id="req-list" style="font-size:12px;color:var(--text3);margin-top:.4rem">${requests.length?renderReqList():'אין פניות.'}</div>
+        </div>
+      </div>
+    </div>`;
+  const cw=document.getElementById('chat-wrap');if(cw)cw.scrollTop=cw.scrollHeight;
+}
+function renderReqList(){return requests.slice(0,5).map(r=>`<div style="padding:6px 0;border-bottom:1px solid var(--border)"><div class="flex-b"><strong style="font-size:12px">${r.type}</strong><span class="chip ${r.status==='פתוח'?'r':'g'}" style="font-size:10px">${r.status}</span></div><div style="font-size:11px;color:var(--text2)">${r.text.slice(0,50)}${r.text.length>50?'...':''}</div></div>`).join('');}
+function sendChat(){
+  const inp=document.getElementById('chat-in');if(!inp||!inp.value.trim())return;
+  const now=new Date();const time=`${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+  const msgObj={role:currentRole==='manager'?'manager':'advisor',text:inp.value,time,from:currentUser};
+  messages.push(msgObj);
+  if(window.saveMessageToFirebase) window.saveMessageToFirebase(msgObj);
+  inp.value='';
+  renderMessages();
+  setTimeout(()=>{
+    const auto=currentRole==='advisor'?'קיבלתי! אחזור אליך בהקדם.':'תודה על ההודעה!';
+    messages.push({role:currentRole==='manager'?'advisor':'manager',text:auto,time:time});
+    renderMessages();
+  },1500);
+}
+function sendRequest(){
+  const t=document.getElementById('req-type')?.value;const tx=document.getElementById('req-text')?.value;
+  if(!tx?.trim())return;
+  const newReq={type:t,text:tx,date:new Date().toLocaleDateString('he-IL'),status:'פתוח',from:currentUser};
+  requests.unshift(newReq);
+  if(window.saveRequestToFirebase) window.saveRequestToFirebase(newReq);
+  document.getElementById('req-text').value='';
+  const ok=document.getElementById('req-ok');if(ok){ok.classList.add('show');setTimeout(()=>ok.classList.remove('show'),2500);}
+  const rl=document.getElementById('req-list');if(rl)rl.innerHTML=renderReqList();
+  const ib=document.getElementById('inbox-badge');if(ib){ib.style.display='inline';ib.textContent=requests.filter(r=>r.status==='פתוח').length;}
+  renderDash();
+}
+
+// ═══════════════ NOTIFICATIONS ═══════════════
+function renderNotifs(){
+  const unread=notifications.filter(n=>!n.read).length;
+  const nb=document.getElementById('notif-badge');if(nb){nb.textContent=unread;nb.style.display=unread?'inline':'none';}
+  const td=document.getElementById('top-dot');if(td)td.style.display=unread?'block':'none';
+  const isM=currentRole==='manager';
+  document.getElementById('page-notifications').innerHTML=`
+    <div class="g2">
+      <div>
+        <div class="sec-hdr"><span class="sec-title">📬 כל ההתראות</span><span class="sec-action" onclick="markAllRead()">סמן הכל נקרא</span></div>
+        <div class="notif-list">
+          ${notifications.map((n,i)=>`
+          <div class="notif-item${n.read?'':' unread'}" onclick="showPop(${i})">
+            <div class="ni-icon ${n.type}">${n.icon}</div>
+            <div style="flex:1"><div class="ni-title">${n.title}</div><div class="ni-text">${n.text}</div><div class="ni-meta">${n.date}</div></div>
+            ${n.read?'':'<div class="ud"></div>'}
+          </div>`).join('')}
+        </div>
+      </div>
+      ${isM?`<div class="card" style="align-self:start">
+        <div class="sec-title">📢 שלח עדכון לכל היועצים</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.75rem">
+          ${[['info','ℹ️','מידע'],['update','📢','עדכון'],['urgent','⚠️','דחוף'],['admin','🔧','אדמין']].map(([t,ic,lb])=>`<button class="tb-btn${t==='info'?' primary':''}" id="ntype-${t}" onclick="setNType('${t}')">${ic} ${lb}</button>`).join('')}
+        </div>
+        <div class="fg"><label>כותרת</label><input type="text" id="adm-title" placeholder="כותרת ההתראה"></div>
+        <div class="fg"><label>תוכן</label><textarea id="adm-text" placeholder="תוכן העדכון..."></textarea></div>
+        <div class="flex" style="flex-wrap:wrap;gap:8px">
+          <button class="sub-btn" onclick="addNotif()">שלח ›</button>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:400;cursor:pointer"><input type="checkbox" id="pop-check"> הצג כ-Pop Up מיידי</label>
+        </div>
+        <div class="ok-msg" id="adm-ok">✅ נשלח!</div>
+      </div>`:'<div class="card" style="align-self:start;padding:1.1rem"><div class="sec-title" style="margin-bottom:.5rem">💡 טיפ</div><div style="font-size:13px;color:var(--text2);line-height:1.8">לחץ על כל התראה לקריאה מלאה.<br>המנהל שולח עדכונים חדשים לכל היועצים.</div></div>'}
+    </div>`;
+}
+let curNType='info';
+function setNType(t){
+  curNType=t;
+  ['info','update','urgent','admin'].forEach(x=>{const b=document.getElementById('ntype-'+x);if(b)b.className='tb-btn'+(x===t?' primary':'');});
+}
+function addNotif(){
+  const title=document.getElementById('adm-title')?.value;const text=document.getElementById('adm-text')?.value;
+  if(!title?.trim()||!text?.trim())return;
+  const icons={info:'ℹ️',update:'📢',urgent:'⚠️',admin:'🔧'};
+  const newNotif={id:notifications.length,type:curNType,icon:icons[curNType],title,text,date:'עכשיו',read:false};
+  notifications.unshift(newNotif);
+  if(window.saveNotifToFirebase) window.saveNotifToFirebase({type:curNType,title,text,sentBy:window.currentUser});
+  document.getElementById('adm-title').value='';document.getElementById('adm-text').value='';
+  const ok=document.getElementById('adm-ok');if(ok){ok.classList.add('show');setTimeout(()=>ok.classList.remove('show'),2500);}
+  if(document.getElementById('pop-check')?.checked)showPop(0);
+  renderNotifs();
+}
+function markAllRead(){notifications.forEach(n=>n.read=true);renderNotifs();}
+
+// ═══════════════ INBOX (Manager) ═══════════════
+function renderInbox(){
+  const open=requests.filter(r=>r.status==='פתוח');
+  document.getElementById('page-inbox').innerHTML=`
+    <div class="g2">
+      <div>
+        <div class="sec-hdr"><span class="sec-title">📥 פניות יועצים (${requests.length})</span><span class="chip r">${open.length} פתוחות</span></div>
+        ${requests.length===0?'<div class="card" style="color:var(--text3);font-size:13px;text-align:center;padding:2rem">אין פניות עדיין</div>':
+        requests.map((r,i)=>`
+          <div class="inbox-item${r.status==='פתוח'?' unread':''}">
+            <div class="inbox-hdr"><span class="inbox-from">👤 ${r.from||'יועץ'}</span><span class="inbox-time">${r.date}</span></div>
+            <span class="inbox-type">${r.type}</span>
+            <div class="inbox-preview mt">${r.text}</div>
+            <div class="inbox-status">
+              <span class="status-chip ${r.status==='פתוח'?'open':'replied'}">${r.status}</span>
+              ${r.status==='פתוח'?`<button class="close-x" onclick="openReply(${i})" style="font-size:11px">↩ ענה</button>`:''}
+              ${r.reply?`<span style="font-size:11px;color:var(--text3)">תשובה: ${r.reply.slice(0,30)}...</span>`:''}
+            </div>
+          </div>`).join('')}
+      </div>
+      <div class="card" style="align-self:start">
+        <div class="sec-title">📊 סיכום</div>
+        <div style="font-size:13px;line-height:2;margin-top:.4rem">
+          <div>סה"כ פניות: <strong>${requests.length}</strong></div>
+          <div>פתוחות: <strong style="color:var(--red)">${open.length}</strong></div>
+          <div>טופלו: <strong style="color:var(--green)">${requests.filter(r=>r.status!=='פתוח').length}</strong></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function openReply(i){
+  replyIdx=i;
+  const r=requests[i];
+  document.getElementById('reply-hdr-title').textContent=`תשובה ל: ${r.from||'יועץ'}`;
+  document.getElementById('orig-msg-text').textContent=`${r.type}: ${r.text}`;
+  document.getElementById('reply-text').value='';
+  document.getElementById('reply-ok').classList.remove('show');
+  document.getElementById('reply-overlay').classList.add('show');
+}
+function closeReply(){document.getElementById('reply-overlay').classList.remove('show');}
+function sendReply(){
+  const txt=document.getElementById('reply-text').value.trim();if(!txt)return;
+  requests[replyIdx].status='טופל';requests[replyIdx].reply=txt;
+  messages.push({role:'manager',text:`תשובה לפנייתך (${requests[replyIdx].type}): ${txt}`,time:new Date().getHours()+':'+String(new Date().getMinutes()).padStart(2,'0')});
+  const ok=document.getElementById('reply-ok');if(ok){ok.classList.add('show');setTimeout(()=>{ok.classList.remove('show');closeReply();renderInbox();},1500);}
+}
+
+// ═══════════════ PROFILE ═══════════════
+function renderProfile(){
+  const init=((profile.fname?.[0]||'')+(profile.lname?.[0]||'')).toUpperCase()||currentUser?.[0]?.toUpperCase()||'?';
+  document.getElementById('page-profile').innerHTML=`
+    <div class="profile-grid">
+      <div>
+        <div class="profile-card card">
+          <label style="cursor:pointer">
+            <div class="big-av" id="big-av">${picData?`<img src="${picData}">`:`<span>${init}</span>`}</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:.35rem">לחץ לשינוי תמונה</div>
+            <input type="file" accept="image/*" style="display:none" onchange="uploadPic(event)">
+          </label>
+          <div class="big-name mt">${[profile.fname,profile.lname].filter(Boolean).join(' ')||currentUser}</div>
+          <div class="big-role">${currentRole==='manager'?'מנהל/ת משמרת':'יועץ/ת לימודים'}</div>
+          <hr class="divider">
+          <div style="font-size:12px;color:var(--text2);line-height:2;text-align:right">
+            <div>📧 ${profile.email||'—'}</div><div>📞 ${profile.phone||'—'}</div><div>🏢 ${profile.dept||'—'}</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:.9rem">
+          <div class="sec-title">✏️ פרטים אישיים</div>
+          <div class="g2 mt">
+            <div class="fg"><label>שם פרטי</label><input type="text" id="p-fn" value="${profile.fname}" placeholder="שם פרטי"></div>
+            <div class="fg"><label>שם משפחה</label><input type="text" id="p-ln" value="${profile.lname}" placeholder="שם משפחה"></div>
+            <div class="fg"><label>דוא"ל</label><input type="email" id="p-em" value="${profile.email}" placeholder="name@smkb.ac.il"></div>
+            <div class="fg"><label>טלפון</label><input type="tel" id="p-ph" value="${profile.phone}" placeholder="05X-XXXXXXX"></div>
+          </div>
+          <div class="fg"><label>יחידה / מחלקה</label><input type="text" id="p-dp" value="${profile.dept}" placeholder="מרכז ייעוץ ורישום"></div>
+          <button class="sub-btn mt" onclick="saveProfile()">שמור ✓</button>
+          <div class="ok-msg" id="prof-ok">✅ נשמר!</div>
+        </div>
+        <div class="card">
+          <div class="sec-title">🖼️ לוגו המכללה</div>
+          <label class="upload-zone mt" for="logo-file2">
+            <div style="font-size:22px">📁</div>
+            <p><strong>לחץ להעלאת לוגו</strong></p>
+            <p>PNG / JPG / SVG</p>
+            <input type="file" id="logo-file2" accept="image/*" onchange="uploadLogo(event)">
+          </label>
+          ${logoData?`<div style="text-align:center;margin-top:.75rem"><img src="${logoData}" style="max-height:40px;object-fit:contain"><br><button class="close-x" onclick="removeLogo()" style="margin-top:.4rem;font-size:11px">הסר</button></div>`:''}
+        </div>
+      </div>
+    </div>`;
+}
+function saveProfile(){
+  profile.fname=document.getElementById('p-fn')?.value||'';
+  profile.lname=document.getElementById('p-ln')?.value||'';
+  profile.email=document.getElementById('p-em')?.value||'';
+  profile.phone=document.getElementById('p-ph')?.value||'';
+  profile.dept=document.getElementById('p-dp')?.value||'';
+  const full=[profile.fname,profile.lname].filter(Boolean).join(' ')||currentUser;
+  const init=((profile.fname?.[0]||'')+(profile.lname?.[0]||'')).toUpperCase()||currentUser?.[0]?.toUpperCase()||'?';
+  document.getElementById('sb-name').textContent=full;
+  if(!picData)document.getElementById('sb-init').textContent=init;
+  const ok=document.getElementById('prof-ok');if(ok){ok.classList.add('show');setTimeout(()=>ok.classList.remove('show'),2500);}
+  renderProfile();
+}
+function uploadPic(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{picData=ev.target.result;document.getElementById('sb-av').innerHTML=`<img src="${picData}">`;renderProfile();};r.readAsDataURL(f);}
+function uploadLogo(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{logoData=ev.target.result;document.getElementById('sb-logo-img').src=logoData;document.getElementById('sb-logo-img').style.display='block';document.getElementById('sb-logo-ph').style.display='none';document.getElementById('login-logo-img').src=logoData;document.getElementById('login-logo-img').style.display='block';document.getElementById('login-logo-ph').style.display='none';renderProfile();};r.readAsDataURL(f);}
+function removeLogo(){logoData=null;document.getElementById('sb-logo-img').style.display='none';document.getElementById('sb-logo-ph').style.display='flex';renderProfile();}
+
+// ═══════════════ POPUP ═══════════════
+const popColors={info:'var(--green)',update:'var(--blue)',urgent:'var(--red)',admin:'var(--gold)'};
+const popLabels={info:'מידע',update:'עדכון',urgent:'דחוף!',admin:'אדמין'};
+function showPop(i){
+  const n=notifications[i];if(!n)return;popIdx=i;
+  document.getElementById('pop-title').textContent=n.title;
+  document.getElementById('pop-msg').textContent=n.text;
+  document.getElementById('pop-date').textContent=n.date;
+  document.getElementById('pop-tag').textContent=popLabels[n.type]||'עדכון';
+  document.getElementById('pop-hdr').style.background=popColors[n.type]||'var(--green)';
+  document.getElementById('pop-overlay').classList.add('show');
+}
+function closePop(){document.getElementById('pop-overlay').classList.remove('show');}
+function markPopRead(){notifications[popIdx].read=true;renderNotifs();closePop();}
+
+// ═══════════════ SIDEBAR MOBILE ═══════════════
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('mob-overlay').classList.toggle('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('mob-overlay').classList.remove('show');}
+</script>
+
+<!-- ── FIREBASE ── -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAv4fN56CTyVEW5CfFi543Emi2H9l_cSZs",
+  authDomain: "consultapp-edeff.firebaseapp.com",
+  projectId: "consultapp-edeff",
+  storageBucket: "consultapp-edeff.firebasestorage.app",
+  messagingSenderId: "134071009535",
+  appId: "1:134071009535:web:26c03b53356aca358f8cca",
+  measurementId: "G-GJ93BC5774"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+const auth = getAuth(app);
+const storage = getStorage(app);
+
+// ── EXPOSE TO GLOBAL SCOPE ──
+window.fbDb = db;
+window.fbAuth = auth;
+window.fbStorage = storage;
+window.fbFns = { collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, serverTimestamp, getDocs, ref, uploadBytes, getDownloadURL, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail };
+
+// ── AUTH STATE LISTENER ──
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User already logged in – auto-fill and enter
+    const savedRole = localStorage.getItem('smkb_role') || 'advisor';
+    const savedName = localStorage.getItem('smkb_name') || user.email.split('@')[0];
+    window.currentRole = savedRole;
+    window.currentUser = savedName;
+    window.firebaseUser = user;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').classList.add('show');
+    window.initApp && window.initApp();
+    setTimeout(() => window.showPop && window.showPop(0), 1800);
+  }
+});
+
+// ── OVERRIDE LOGIN ──
+window.doFirebaseLogin = async function() {
+  const name  = document.getElementById('login-name').value.trim();
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+
+  if (!email || !pass) { alert('נא למלא מייל וסיסמה'); return; }
+
+  const loginBtn = document.getElementById('login-submit-btn');
+  loginBtn.textContent = 'מתחבר...';
+  loginBtn.disabled = true;
+
+  try {
+    // ── Step 1: Authenticate with Firebase ──
+    let userCred;
+    try {
+      userCred = await signInWithEmailAndPassword(auth, email, pass);
+    } catch(e) {
+      if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential' || e.code === 'auth/invalid-email') {
+        loginBtn.textContent = 'כניסה לפורטל ›';
+        loginBtn.disabled = false;
+        alert('המייל או הסיסמה שגויים. פנה למנהל המערכת.');
+        return;
+      } else { throw e; }
+    }
+
+    const uid = userCred.user.uid;
+    window.firebaseUser = userCred.user;
+
+    // ── Step 2: Read role from Firebase Database ──
+    const { ref: dbRef, get, child } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js");
+    const snapshot = await get(dbRef(db, 'users/' + uid));
+
+    if (snapshot.exists()) {
+      // User exists in DB – read their role
+      const userData = snapshot.val();
+      window.currentRole = userData.role || 'advisor';
+      window.currentUser = userData.name || name || email.split('@')[0];
+
+      // Update last login
+      const { ref: dbRef2, set } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js");
+      await set(dbRef2(db, 'users/' + uid + '/lastLogin'), new Date().toISOString());
+
+    } else {
+      // ── New user: check if first admin setup ──
+      // Count existing users
+      const allUsersSnap = await get(dbRef(db, 'users'));
+      const isFirstUser = !allUsersSnap.exists();
+
+      let assignedRole = 'advisor'; // default
+
+      if (isFirstUser) {
+        // First user ever = admin
+        assignedRole = 'manager';
+        alert('ברוך הבא! נרשמת כמנהל ראשי של המערכת.');
+      }
+
+      if (!name) {
+        loginBtn.textContent = 'כניסה לפורטל ›';
+        loginBtn.disabled = false;
+        alert('כניסה ראשונה – נא להכניס שם מלא');
+        return;
+      }
+
+      // Save new user to DB
+      const { ref: dbRef3, set: dbSet } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js");
+      await dbSet(dbRef3(db, 'users/' + uid), {
+        name: name,
+        email: email,
+        role: assignedRole,
+        createdAt: new Date().toISOString(),
+        lastLogin: new Date().toISOString()
+      });
+
+      window.currentRole = assignedRole;
+      window.currentUser = name;
+    }
+
+    localStorage.setItem('smkb_role', window.currentRole);
+    localStorage.setItem('smkb_name', window.currentUser);
+
+    // ── Step 3: Enter app ──
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').classList.add('show');
+    window.initApp && window.initApp();
+    setTimeout(() => window.showPop && window.showPop(0), 1800);
+
+  } catch(e) {
+    console.error(e);
+    alert('שגיאה: ' + (e.message || e.code));
+    loginBtn.textContent = 'כניסה לפורטל ›';
+    loginBtn.disabled = false;
+  }
+};
+
+// ── ADD USER (Manager only) ──
+window.addUserToSystem = async function(name, email, password, role) {
+  try {
+    const { ref: dbRef, set: dbSet } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js");
+    // Create auth user
+    const userCred = await createUserWithEmailAndPassword(auth, email, password);
+    // Save to DB with role
+    await dbSet(dbRef(db, 'users/' + userCred.user.uid), {
+      name, email, role,
+      createdAt: new Date().toISOString(),
+      lastLogin: null
+    });
+    return { success: true, uid: userCred.user.uid };
+  } catch(e) {
+    return { success: false, error: e.message };
+  }
+};
+
+// ── GET ALL USERS (Manager only) ──
+window.getAllUsers = async function() {
+  try {
+    const { ref: dbRef, get } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js");
+    const snap = await get(dbRef(db, 'users'));
+    if (!snap.exists()) return [];
+    return Object.entries(snap.val()).map(([uid, data]) => ({ uid, ...data }));
+  } catch(e) {
+    console.error(e);
+    return [];
+  }
+};
+
+// ── FIREBASE SAVE: REQUESTS ──
+window.saveRequestToFirebase = async function(reqObj) {
+  try {
+    const docRef = await addDoc(collection(db, 'requests'), {
+      ...reqObj,
+      uid: window.firebaseUser?.uid || 'anonymous',
+      createdAt: serverTimestamp()
+    });
+    return docRef.id;
+  } catch(e) { console.error('saveRequest:', e); }
+};
+
+// ── FIREBASE LISTEN: REQUESTS (Manager) ──
+window.listenRequests = function(callback) {
+  const q = query(collection(db, 'requests'), orderBy('createdAt', 'desc'));
+  return onSnapshot(q, (snap) => {
+    const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    callback(items);
+  });
+};
+
+// ── FIREBASE SAVE: NOTIFICATIONS ──
+window.saveNotifToFirebase = async function(notifObj) {
+  try {
+    await addDoc(collection(db, 'notifications'), {
+      ...notifObj,
+      createdAt: serverTimestamp()
+    });
+  } catch(e) { console.error('saveNotif:', e); }
+};
+
+// ── FIREBASE LISTEN: NOTIFICATIONS ──
+window.listenNotifications = function(callback) {
+  const q = query(collection(db, 'notifications'), orderBy('createdAt', 'desc'));
+  return onSnapshot(q, (snap) => {
+    const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    callback(items);
+  });
+};
+
+// ── FIREBASE SAVE: SHIFTS (Realtime DB) ──
+window.saveShiftToFirebase = async function(shiftObj) {
+  try {
+    const { ref: dbRef, push, serverTimestamp: rtServerTime } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js");
+    await push(dbRef(db, 'shifts'), {
+      ...shiftObj,
+      uid: window.firebaseUser?.uid || 'anonymous',
+      createdAt: new Date().toISOString()
+    });
+  } catch(e) { console.error('saveShift:', e); }
+};
+
+// ── FIREBASE SAVE: MESSAGES ──
+window.saveMessageToFirebase = async function(msgObj) {
+  try {
+    await addDoc(collection(db, 'messages'), {
+      ...msgObj,
+      uid: window.firebaseUser?.uid || 'anonymous',
+      createdAt: serverTimestamp()
+    });
+  } catch(e) { console.error('saveMsg:', e); }
+};
+
+// ── FIREBASE LISTEN: MESSAGES ──
+window.listenMessages = function(callback) {
+  const q = query(collection(db, 'messages'), orderBy('createdAt', 'asc'));
+  return onSnapshot(q, (snap) => {
+    const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    callback(items);
+  });
+};
+
+// ── FIREBASE UPDATE: REQUEST STATUS ──
+window.updateRequestStatus = async function(id, status, reply) {
+  try {
+    const { doc: fbDoc, updateDoc: fbUpdate } = window.fbFns;
+    await fbUpdate(fbDoc(db, 'requests', id), { status, reply, repliedAt: serverTimestamp() });
+  } catch(e) { console.error('updateRequest:', e); }
+};
+
+// ── FIREBASE UPLOAD: PROFILE PIC ──
+window.uploadProfilePicToFirebase = async function(file) {
+  if (!window.firebaseUser) return null;
+  try {
+    const storageRef = ref(storage, `avatars/${window.firebaseUser.uid}`);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
+  } catch(e) { console.error('uploadPic:', e); return null; }
+};
+
+// ── FIREBASE UPLOAD: LOGO ──
+window.uploadLogoToFirebase = async function(file) {
+  try {
+    const storageRef = ref(storage, 'logos/main-logo');
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
+  } catch(e) { console.error('uploadLogo:', e); return null; }
+};
+
+// ── FIREBASE LOGOUT ──
+window.firebaseLogout = async function() {
+  await signOut(auth);
+  localStorage.removeItem('smkb_role');
+  localStorage.removeItem('smkb_name');
+};
+
+console.log('✅ Firebase connected: consultapp-edeff');
+</script>
+
+</body>
+</html>
